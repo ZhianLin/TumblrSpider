@@ -1,8 +1,8 @@
-#coding:gbk
+#coding:utf-8
 
 '''
-ÅäÖÃÎÄ¼şµÄ¶à¸ö¼üÖµÓÃ|·Ö¸î£¬Ä¿Ç°Ö»Ö§³Ö²©¿ÍºÍÎÄ¼şÀàĞÍÁ½ÖÖÉèÖÃÏî£¬Çë²Î¿¼Ô¤ÖÃÄÚÈİÅäÖÃ¡£
-ĞŞ¸ÄÅäÖÃÎÄ¼şµÄ¸ñÊ½¿ÉÄÜµ¼ÖÂ²»¿ÉÔ¤ÁÏµÄºó¹û¡£
+é…ç½®æ–‡ä»¶çš„å¤šä¸ªé”®å€¼ç”¨|åˆ†å‰²ï¼Œç›®å‰åªæ”¯æŒåšå®¢å’Œæ–‡ä»¶ç±»å‹ä¸¤ç§è®¾ç½®é¡¹ï¼Œè¯·å‚è€ƒé¢„ç½®å†…å®¹é…ç½®ã€‚
+ä¿®æ”¹é…ç½®æ–‡ä»¶çš„æ ¼å¼å¯èƒ½å¯¼è‡´ä¸å¯é¢„æ–™çš„åæœã€‚
 '''
 import re, os
 import urllib
@@ -12,7 +12,7 @@ import time
 configFile = 'config.txt'
 
 def initConfigFile():
-    ''' ³õÊ¼»¯ÅäÖÃÎÄ¼ş¡£ '''
+    ''' åˆå§‹åŒ–é…ç½®æ–‡ä»¶ã€‚ '''
     f = file(configFile, 'w')
     
     blogs = ['nondente', 'eeekou']
@@ -27,7 +27,7 @@ def initConfigFile():
     f.close()
         
 def readConfig():
-    ''' ¶ÁÈ¡ÅäÖÃÎÄ¼ş¡£ '''
+    ''' è¯»å–é…ç½®æ–‡ä»¶ã€‚ '''
     if not os.path.isfile(configFile):
         initConfigFile()
     
@@ -48,9 +48,9 @@ def readConfig():
     return dic
 
 def quit(prompt):
-    ''' ÍË³ö³ÌĞò¡£ '''
+    ''' é€€å‡ºç¨‹åºã€‚ '''
     print prompt
-    raw_input('°´»Ø³µ¼üÍË³ö')
+    raw_input('æŒ‰å›è½¦é”®é€€å‡º')
     exit()
 
 class TumblrSpider:
@@ -63,56 +63,58 @@ class TumblrSpider:
         self.goHunting = True
         
     def __assemblePageUrl(self, page):
-        ''' Æ´×°Ö¸¶¨Ò³ÃæµÄURL¡£'''
+        ''' æ‹¼è£…æŒ‡å®šé¡µé¢çš„URLã€‚'''
         return '%s%d' %(self.baseUrl, page)
     
     def crawl(self):
-        ''' ÅÀÈ¡ËùÓĞÅäÖÃÎÄ¼şÖĞÖ¸¶¨µÄÎÄ¼şÀàĞÍ¡£'''
+        ''' çˆ¬å–æ‰€æœ‰é…ç½®æ–‡ä»¶ä¸­æŒ‡å®šçš„æ–‡ä»¶ç±»å‹ã€‚'''
         if not os.path.isdir(self.dir):
                     os.mkdir(self.dir)
         
-        print '¿ªÊ¼ÅÀÈ¡%sµÄ²©¿Í¡­¡­' %self.blog
+        print 'å¼€å§‹çˆ¬å–%sçš„åšå®¢â€¦â€¦' %self.blog
         
         page = 1
-        while self.goHunting:
+        while self.goHunting and page < 500:
             url = self.__assemblePageUrl(page)
             
-            print '×¼±¸ÅÀÈ¡µÚ%dÒ³¡­¡­' %page
+            print 'å‡†å¤‡çˆ¬å–ç¬¬%dé¡µâ€¦â€¦' %page
             self.__crawlAPage(url)
         
             page += 1
     
     def __crawlAPage(self, url):
-        ''' ÅÀÈ¡Ò»Ò³ÖĞËùÓĞÖ¸¶¨ÎÄ¼şÀàĞÍ¡£'''
+        ''' çˆ¬å–ä¸€é¡µä¸­æ‰€æœ‰æŒ‡å®šæ–‡ä»¶ç±»å‹ã€‚'''
         page = self.__readPage(url)
         links = self.__findAllLinks(page)
         self.__retrieveAll(links)
         
     def __readPage(self, url):
-        ''' ¶ÁÈ¡Ò³ÃæÔ´´úÂë¡£ '''
+        ''' è¯»å–é¡µé¢æºä»£ç ã€‚ '''
         for i in range(5):
             try:
-                print 'ÕıÔÚÁ¬½ÓÒ³Ãæ¡­¡­'
+                print 'æ­£åœ¨è¿æ¥é¡µé¢â€¦â€¦'
                 response = urllib.urlopen(url)
                 page = response.read()
                 response.close()
             except:
-                print 'Á¬½Ó³¬Ê±£¬ÎåÃëºóÖØÊÔ¡­¡­'
+                print 'è¿æ¥è¶…æ—¶ï¼Œäº”ç§’åé‡è¯•â€¦â€¦'
                 time.sleep(5)
             else:
                 break
         
         if not page:
-            quit('Ò³ÃæÁ¬½ÓÊ§°Ü')
+            quit('é¡µé¢è¿æ¥å¤±è´¥')
         else:
             return page
         
         
         
     def __findAllLinks(self, page):
-        ''' ´ÓÒ³ÃæÔ´´úÂëÖĞÆ¥Åä³öËùÓĞÏÂÔØÁ´½Ó¡£ '''
+        ''' ä»é¡µé¢æºä»£ç ä¸­åŒ¹é…å‡ºæ‰€æœ‰ä¸‹è½½é“¾æ¥ã€‚ '''
         
-        regex = r'(http.*\.(%s)).*Zoom' %'|'.join(self.fileTypes)
+#        regex = r'(http.*\.(%s)).*Zoom' %'|'.join(self.fileTypes)
+#        regex = r'(http.*\.media\.tumblr\.com/([a-z]|[A-Z]|[0-9]){32}\.(%s))' %'|'.join(self.fileTypes)
+        regex = r'(http://[0-9]{0,5}\.media\.tumblr\.com/([a-z]|[A-Z]|[0-9]){32}.*\.(%s))' %'|'.join(self.fileTypes)
         result = re.findall(regex, page)
         
         links = []
@@ -120,36 +122,36 @@ class TumblrSpider:
         for match in result:
             links.append(match[0])
             
-        print 'ÕÒµ½ÁË%d¸öÏÂÔØÁ´½Ó¡£' %len(links)
+        print 'æ‰¾åˆ°äº†%dä¸ªä¸‹è½½é“¾æ¥ã€‚' %len(links)
         return links
         
     def __retrieveAll(self, links):
-        ''' ÏÂÔØËùÓĞÎÄ¼ş¡£ '''
+        ''' ä¸‹è½½æ‰€æœ‰æ–‡ä»¶ã€‚ '''
         for i in range(len(links)):
-            print 'ÕıÔÚÏÂÔØ:%d/%d' %(i+1, len(links))
+            print 'æ­£åœ¨ä¸‹è½½:%d/%d' %(i+1, len(links))
             fileName = self.__splitResourceName(links[i])
             path = self.dir+os.sep+fileName
             
             if os.path.isfile(path):
-                print 'ÎÄ¼şÒÑ´æÔÚ£¬ÅÀÈ¡ÖÕÖ¹¡£'
+                print 'æ–‡ä»¶å·²å­˜åœ¨ï¼Œçˆ¬å–ç»ˆæ­¢ã€‚'
                 self.goHunting = False
                 break;
             else:
                 self.__retrieve(links[i], path)
                 
     def __retrieve(self, url, path):
-        ''' ÏÂÔØµ¥¸öÎÄ¼şµ½Ö¸¶¨Ä¿Â¼¡£ '''
+        ''' ä¸‹è½½å•ä¸ªæ–‡ä»¶åˆ°æŒ‡å®šç›®å½•ã€‚ '''
         for i in range(5):
             try:
                 urllib.urlretrieve(url, path)
             except:
-                print 'Á¬½Ó³¬Ê±£¬ÎåÃëºóÖØÊÔ¡­¡­'
+                print 'è¿æ¥è¶…æ—¶ï¼Œäº”ç§’åé‡è¯•â€¦â€¦'
                 time.sleep(5)
             else:
                 break;
             
     def __splitResourceName(self, url):
-        ''' ´ÓUrlÖĞÌáÈ¡ÎÄ¼şÃû¡£ '''
+        ''' ä»Urlä¸­æå–æ–‡ä»¶åã€‚ '''
         return url.split('/')[-1]
         
 
@@ -162,4 +164,4 @@ if __name__ == '__main__':
         spider = TumblrSpider(blog, dic['fileTypes'])
         spider.crawl()
         
-    quit('ÏÂÔØÍê±Ï¡£')
+    quit('ä¸‹è½½å®Œæ¯•ã€‚')
