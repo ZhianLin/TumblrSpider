@@ -1,2 +1,0 @@
-Blog=nondenete|eeekou
-FileType=jpg|png|gif

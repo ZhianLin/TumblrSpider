@@ -52,3 +52,11 @@ docs/_build/
 
 # PyBuilder
 target/
+
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+out
+gen
