@@ -2,7 +2,7 @@
 
 Download files (images, videos etc.) in indicated extensions from indicated Tumblr blogs page by page.
 
-##Config templet:
+##Config template:
 
 	Blog=bokuwachikuwa|wnderlst
 	FileType=jpg|png|gif
