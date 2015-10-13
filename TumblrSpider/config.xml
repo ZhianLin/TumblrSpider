@@ -1,9 +1,21 @@
 <config>
     <global>
+        <!-- retry: 连接失败时的重试次数 -->
+        <!-- timeout: 连接超时时间 -->
+        <!-- abortontimeout: 重试次数过多时终止程序 -->
+        <network retry="5" timeout="30" abortontimeout="false"/>
 
+        <!-- 保存路径 *留空以保存到当前文件夹 -->
+        <directory></directory>
     </global>
 
-    <blog name="nondenete">
+    <!-- name: 博客名 -->
+    <blog name="wnderlst">
+        <!-- 需要下载的文件类型 -->
+        <filetype>jpg|png|gif</filetype>
+    </blog>
 
+    <blog name="bokuwachikuwa">
+        <filetype>jpg|png|gif</filetype>
     </blog>
 </config>
