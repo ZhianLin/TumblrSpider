@@ -6,9 +6,7 @@ import urllib
 import socket
 import time
 import sys
-
-from libs.fileutils import FileUtils
-from libs.config import Config
+import tempfile
 
 
 class TumblrSpider:
@@ -21,11 +19,11 @@ class TumblrSpider:
         self.fileTypes = fileTypes
 
         self.goHunting = True
-        self.tempFile = self.dir + os.sep + 'downloading.tmp'
 
     def run(self):
         """ 主函数，爬取指定博客。 """
-        FileUtils.mkdir(self.dir)
+        if not os.path.isdir(self.dir):
+            os.mkdir(self.dir)
         self.__crawl()
 
     def __crawl(self):
@@ -103,7 +101,7 @@ class TumblrSpider:
         """ 下载单个链接。 """
         filename = self.__splitResourceName(link)
 
-        if FileUtils.fileExists(filename):
+        if os.path.isfile(filename):
             print u'文件已存在，终止爬取。'
             self.goHunting = False
             return
@@ -117,9 +115,50 @@ class TumblrSpider:
 
     def __download(self, url, saveTo):
         """ 下载文件。 """
-        FileUtils.createFile(self.tempFile)
-        urllib.urlretrieve(url, self.tempFile)
-        os.rename(self.tempFile, saveTo)
+        tmp = tempfile.mkstemp("tmp")
+        urllib.urlretrieve(url, tmp)
+        os.rename(tmp, saveTo)
+
+
+class Config:
+    """ 爬虫配置。 """
+    CONFIG_FILE = sys.path[0] + os.sep + 'config.txt'
+
+    def initConfigFile(self):
+        """ 初始化配置文件。 """
+        f = file(Config.CONFIG_FILE, 'w')
+
+        blogs = ['bokuwachikuwa', 'wnderlst']
+        fileTypes = ['jpg', 'png', 'gif']
+
+        blogsStr = '|'.join(blogs)
+        fileTypesStr = '|'.join(fileTypes)
+
+        f.write('Blog=%s\n' % blogsStr)
+        f.write('FileType=%s\n' % fileTypesStr)
+
+        f.close()
+
+    def readConfig(self):
+        """ 读取配置文件。 """
+        if not os.path.isfile(Config.CONFIG_FILE):
+            self.initConfigFile()
+
+        f = file(Config.CONFIG_FILE, 'r')
+
+        configFileContent = ''.join(f.readlines())
+
+        blogsStr = re.search('Blog=(.*)\n', configFileContent).group(1)
+        fileTypesStr = re.search('FileType=(.*)\n', configFileContent).group(1)
+
+        blogs = blogsStr.split('|')
+        fileTypes = fileTypesStr.split('|')
+
+        dic = {'blogs': blogs, 'fileTypes': fileTypes}
+
+        f.close()
+
+        return dic
 
 
 def abort(prompt):
