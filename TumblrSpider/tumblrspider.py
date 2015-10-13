@@ -169,7 +169,7 @@ def abort(prompt):
 
 
 if __name__ == '__main__':
-    socket.setdefaulttimeout(10)
+    socket.setdefaulttimeout(30)
 
     config = Config()
     dic = config.readConfig()
