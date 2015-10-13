@@ -115,7 +115,7 @@ class TumblrSpider:
 
     def __download(self, url, saveTo):
         """ 下载文件。 """
-        tmp = tempfile.mkstemp("tmp")
+        tmp = tempfile.mktemp(".tmp")
         urllib.urlretrieve(url, tmp)
         os.rename(tmp, saveTo)
 
@@ -169,7 +169,7 @@ def abort(prompt):
 
 
 if __name__ == '__main__':
-    socket.setdefaulttimeout(30)
+    socket.setdefaulttimeout(10)
 
     config = Config()
     dic = config.readConfig()
