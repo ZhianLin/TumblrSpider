@@ -1,12 +1,16 @@
+# coding=utf-8
+
 import os
 import re
 import sys
 
 
 class Config:
+    """ 爬虫配置。 """
     CONFIG_FILE = sys.path[0] + os.sep + 'config.txt'
 
     def initConfigFile(self):
+        """ 初始化配置文件。 """
         f = file(Config.CONFIG_FILE, 'w')
 
         blogs = ['bokuwachikuwa', 'wnderlst']
@@ -21,6 +25,7 @@ class Config:
         f.close()
 
     def readConfig(self):
+        """ 读取配置文件。 """
         if not os.path.isfile(Config.CONFIG_FILE):
             self.initConfigFile()
 

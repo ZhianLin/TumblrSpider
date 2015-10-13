@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import re
 import os
 import urllib
@@ -22,32 +24,34 @@ class TumblrSpider:
         self.tempFile = self.dir + os.sep + 'downloading.tmp'
 
     def run(self):
-        """ Main function. """
+        """ 主函数，爬取指定博客。 """
         FileUtils.mkdir(self.dir)
         self.__crawl()
 
     def __crawl(self):
-        """ Crawl blog page by page. """
-        print 'Start crawling blog [%s]' % self.blog
+        """ 逐页爬取博客内容。 """
+        print u'开始爬取 %s 的博客\n' % self.blog
         page = 1
         while self.goHunting:
             self.__crawlPage(page)
             page += 1
+            print
 
     def __crawlPage(self, page):
-        """ Crawl a single page. """
-        print 'Connecting page %d......' % page
+        """ 爬取单页内容 """
+        print u'尝试连接第 %d 页……' % page
         url = self.__assemblePageUrl(page)
         pageSrc = self.__readPage(url)
         links = self.__findAllLinks(pageSrc)
-        print '%s link(s) found' % len(links)
+        print u'找到了 %d 个下载链接' % len(links)
         self.__retrieveAll(links)
 
     def __assemblePageUrl(self, page):
+        """ 拼装页面URL。 """
         return '%s%d' % (self.baseUrl, page)
 
     def __readPage(self, url):
-        """ Read page's source code. """
+        """ 读取页面源代码。 """
         page = None
 
         for i in range(5):
@@ -56,18 +60,18 @@ class TumblrSpider:
                 page = response.read()
                 response.close()
             except:
-                print 'Connection timeout, retry in 5s......'
+                print u'连接超时，五秒后重试……'
                 time.sleep(5)
             else:
                 break
 
         if not page:
-            abort('Connection failed, spider abort.')
+            abort(u'连接失败，终止爬取。')
         else:
             return page
 
     def __findAllLinks(self, page):
-        """ Match all download links from source code. """
+        """ 从页面源码中匹配出所有下载链接。 """
         # regex written by xiyoulaoyuanjia@Github
         regex = r'(http://[0-9]{0,5}\.media\.tumblr\.com/([a-z]|[A-Z]|[0-9]){32}.*\.(%s))' % '|'.join(self.fileTypes)
         result = re.findall(regex, page)
@@ -80,18 +84,27 @@ class TumblrSpider:
         return links
 
     def __retrieveAll(self, links):
+        """ 下载所有链接。 """
         for i in range(len(links)):
             if not self.goHunting:
                 return
 
-            print 'Downloading: %d/%d' % (i + 1, len(links))
-            self.__retrieve(links[i])
+            for j in range(TumblrSpider.RETRY_LIMIT):
+                try:
+                    print u'开始下载 %d/%d' % (i + 1, len(links))
+                    self.__retrieve(links[i])
+                except:
+                    print u'连接超时，五秒后重试……'
+                    time.sleep(5)
+                else:
+                    break
 
     def __retrieve(self, link):
+        """ 下载单个链接。 """
         filename = self.__splitResourceName(link)
 
         if FileUtils.fileExists(filename):
-            print 'File already exists, spider abort'
+            print u'文件已存在，终止爬取。'
             self.goHunting = False
             return
         else:
@@ -99,25 +112,20 @@ class TumblrSpider:
             self.__download(link, path)
 
     def __splitResourceName(self, url):
-        """ Split filename from url. """
+        """ 从下载链接中切分出文件名。 """
         return url.split('/')[-1]
 
     def __download(self, url, saveTo):
-        for i in range(TumblrSpider.RETRY_LIMIT):
-            try:
-                FileUtils.createFile(self.tempFile)
-                urllib.urlretrieve(url, self.tempFile)
-                os.rename(self.tempFile, saveTo)
-            except:
-                print 'Connection timeout, retry in 5s......'
-                time.sleep(5)
-            else:
-                break
+        """ 下载文件。 """
+        FileUtils.createFile(self.tempFile)
+        urllib.urlretrieve(url, self.tempFile)
+        os.rename(self.tempFile, saveTo)
 
 
 def abort(prompt):
+    """ 退出程序。 """
     print prompt
-    raw_input('Press Enter to exit')
+    raw_input(u'按回车键退出')
     exit()
 
 
@@ -130,5 +138,6 @@ if __name__ == '__main__':
     for blog in dic['blogs']:
         spider = TumblrSpider(blog, dic['fileTypes'])
         spider.run()
+        print
 
-    abort('Done.')
+    abort(u'下载完毕。')
