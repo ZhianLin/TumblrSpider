@@ -2,9 +2,9 @@
 
 	惊了，官方逼死同人啊。http://yangtai.xunlei.com/?p=10000
 
-一个 Python 爬虫，用于逐页下载指定的 Tumblr 博客中指定的文件类型（如图片，视频等）。
+一个 Python 爬虫，用于逐页下载指定的 Tumblr 博客中指定的文件类型（如图片，~~视频~~等）。
 
-Download files (images, videos etc.) in indicated extensions from indicated Tumblr blogs page by page.
+Download files (images, ~~videos~~ etc.) in indicated extensions from indicated Tumblr blogs page by page.
 
 ##Config template 配置模板 :
 
